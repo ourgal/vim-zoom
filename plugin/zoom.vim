@@ -1,16 +1,21 @@
-if exists('g:loaded_zoom')
-  finish
+if !has('vim9script') ||  v:version < 900
+    finish
 endif
-let g:loaded_zoom = 1
+vim9script
+
 if !exists('g:zoom_tmux_z')
-  let g:zoom_tmux_z = v:false
+  g:zoom_tmux_z = false
 endif
 
-nnoremap <silent> <Plug>(zoom-toggle) :call zoom#toggle()<CR>
+import autoload '../lib/zoom.vim' as lib
+
+const zoom = lib.Zoom.new()
+
+nnoremap <silent> <Plug>(zoom-toggle) <scriptcmd>zoom.Toggle()<CR>
 
 if !hasmapto('<Plug>(zoom-toggle)')
   nmap <C-W>m <Plug>(zoom-toggle)
 endif
-if empty($TMUX) && g:zoom_tmux_z == v:true
+if empty($TMUX) == 1 && g:zoom_tmux_z == true
   nmap <C-W>z <Plug>(zoom-toggle)
 endif
